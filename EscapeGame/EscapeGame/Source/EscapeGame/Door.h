@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/TriggerVolume.h"
+#include "Engine/World.h"
 #include "Components/ActorComponent.h"
 #include "Door.generated.h"
+
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -24,6 +27,23 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	virtual void OpenDoor();
+
+	virtual void CloseDoor();
+
+private:
+
+	UPROPERTY(EditAnywhere)
+	float openAngle = 90.0f;
+
+	UPROPERTY(EditAnywhere)
+	ATriggerVolume* PressurePlate;
+
+	UPROPERTY(EditAnywhere)
+	float DoorCloseDelay = 1.4f;
+
+	float DoorLastOpenTime;
+
+	AActor* ActorThatTriggers; // Pawn inherits from actor
 	
 };
