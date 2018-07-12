@@ -6,6 +6,10 @@
 #include "Components/ActorComponent.h"	
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Components/InputComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "Grabber.generated.h"
 
 
@@ -30,6 +34,15 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float Reach = 50.0f;
-		
 	
+	UPhysicsHandleComponent* PhysicsHandleComponent = nullptr;
+	UInputComponent* InputComponent = nullptr;
+
+	void Release();
+	void Grab();
+
+	void FindPhysicsHandleComponent();
+	void SetupInputComponent();
+
+	FHitResult GetFirstPhysicsBodyInReach();
 };

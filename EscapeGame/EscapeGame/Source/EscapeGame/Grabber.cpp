@@ -21,8 +21,8 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-	
+	FindPhysicsHandleComponent();
+	SetupInputComponent();
 }
 
 
@@ -41,16 +41,45 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
 
-	DrawDebugLine(
-		GetWorld(),
-		PlayerViewPointLocation,
-		LineTraceEnd,
-		FColor(255, 0, 0, 255),
-		false,
-		0.0f,
-		0.0f,
-		10.0f
+	if (PhysicsHandleComponent->GrabbedComponent) {
+		PhysicsHandleComponent->SetTargetLocation(LineTraceEnd);
+	}
+}
+
+void UGrabber::FindPhysicsHandleComponent() {
+	PhysicsHandleComponent = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (!PhysicsHandleComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s has no physics handler!"), *(GetOwner()->GetName()))
+	}
+}
+
+void UGrabber::SetupInputComponent()
+{
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (InputComponent)
+	{
+		// Bind input axis
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s has no Input Component!"), *(GetOwner()->GetName()))
+	}
+}
+
+FHitResult UGrabber::GetFirstPhysicsBodyInReach()
+{
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotation;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		OUT PlayerViewPointLocation,
+		OUT PlayerViewPointRotation
 	);
+
+	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
+
 	/// Setup query parameters
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
 	/// Raycast out to reach distance
@@ -63,10 +92,26 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		TraceParameters
 	);
 
-	AActor* HitActor = Hit.GetActor();
-	if (HitActor) {
-		UE_LOG(LogTemp, Warning, TEXT("Grabber raycast hit: %s"), *(HitActor->GetName()))
-	}
-	// See what we hit
+	return Hit;
 }
 
+
+void UGrabber::Grab() {
+	UE_LOG(LogTemp, Warning, TEXT("Grab pressed!"))
+
+	FHitResult HitResult = GetFirstPhysicsBodyInReach();
+	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
+	AActor* ActorHit = HitResult.GetActor();
+	if (ActorHit)
+	{
+		PhysicsHandleComponent->GrabComponentAtLocation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation());
+		UE_LOG(LogTemp, Warning, TEXT("Grabber raycast hit: %s"), *(ActorHit->GetName()))
+	}
+	
+}
+
+
+void UGrabber::Release() {
+	UE_LOG(LogTemp, Warning, TEXT("Grab released!"))
+	PhysicsHandleComponent->ReleaseComponent();
+}
