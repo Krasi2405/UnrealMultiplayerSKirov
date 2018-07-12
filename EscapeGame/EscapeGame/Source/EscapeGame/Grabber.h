@@ -13,6 +13,7 @@
 #include "Grabber.generated.h"
 
 
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ESCAPEGAME_API UGrabber : public UActorComponent
 {
@@ -45,4 +46,14 @@ private:
 	void SetupInputComponent();
 
 	FHitResult GetFirstPhysicsBodyInReach();
+
+	typedef struct FPlayerOrientation {
+		FVector PlayerViewPointLocation;
+		FRotator PlayerViewPointRotation;
+	};
+
+	FPlayerOrientation GetPlayerOrientation();
+
+	FVector GetReachStart();
+	FVector GetReachEnd();
 };

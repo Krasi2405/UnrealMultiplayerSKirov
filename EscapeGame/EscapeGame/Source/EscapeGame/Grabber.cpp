@@ -4,15 +4,12 @@
 
 
 
-
 // Sets default values for this component's properties
 UGrabber::UGrabber()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -31,20 +28,13 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	/// Get the player viewpoint
-	FVector PlayerViewPointLocation;
-	FRotator PlayerViewPointRotation;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
-		OUT PlayerViewPointLocation,
-		OUT PlayerViewPointRotation
-	);
-
-	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
-
-	if (PhysicsHandleComponent->GrabbedComponent) {
-		PhysicsHandleComponent->SetTargetLocation(LineTraceEnd);
+	if (PhysicsHandleComponent->GrabbedComponent) 
+	{
+		// Move object that's being hold
+		PhysicsHandleComponent->SetTargetLocation(GetReachEnd());
 	}
 }
+
 
 void UGrabber::FindPhysicsHandleComponent() {
 	PhysicsHandleComponent = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
@@ -54,12 +44,12 @@ void UGrabber::FindPhysicsHandleComponent() {
 	}
 }
 
+
 void UGrabber::SetupInputComponent()
 {
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent)
 	{
-		// Bind input axis
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
 		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
@@ -69,36 +59,8 @@ void UGrabber::SetupInputComponent()
 	}
 }
 
-FHitResult UGrabber::GetFirstPhysicsBodyInReach()
-{
-	FVector PlayerViewPointLocation;
-	FRotator PlayerViewPointRotation;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
-		OUT PlayerViewPointLocation,
-		OUT PlayerViewPointRotation
-	);
-
-	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
-
-	/// Setup query parameters
-	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
-	/// Raycast out to reach distance
-	FHitResult Hit;
-	GetWorld()->LineTraceSingleByObjectType(
-		OUT Hit,
-		PlayerViewPointLocation,
-		LineTraceEnd,
-		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
-		TraceParameters
-	);
-
-	return Hit;
-}
-
 
 void UGrabber::Grab() {
-	UE_LOG(LogTemp, Warning, TEXT("Grab pressed!"))
-
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
 	AActor* ActorHit = HitResult.GetActor();
@@ -107,11 +69,46 @@ void UGrabber::Grab() {
 		PhysicsHandleComponent->GrabComponentAtLocation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation());
 		UE_LOG(LogTemp, Warning, TEXT("Grabber raycast hit: %s"), *(ActorHit->GetName()))
 	}
-	
 }
 
 
 void UGrabber::Release() {
-	UE_LOG(LogTemp, Warning, TEXT("Grab released!"))
 	PhysicsHandleComponent->ReleaseComponent();
+}
+
+
+UGrabber::FPlayerOrientation UGrabber::GetPlayerOrientation() {
+	FPlayerOrientation PlayerOrientation;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		OUT PlayerOrientation.PlayerViewPointLocation,
+		OUT PlayerOrientation.PlayerViewPointRotation
+	);
+	return PlayerOrientation;
+}
+
+
+FVector UGrabber::GetReachStart() {
+	return GetPlayerOrientation().PlayerViewPointLocation;
+}
+
+FVector UGrabber::GetReachEnd() {
+	FPlayerOrientation PlayerOrientation = GetPlayerOrientation();
+
+	FVector ReachEnd = PlayerOrientation.PlayerViewPointLocation + PlayerOrientation.PlayerViewPointRotation.Vector() * Reach;
+	return ReachEnd;
+}
+
+
+FHitResult UGrabber::GetFirstPhysicsBodyInReach()
+{
+	FHitResult HitResult;
+	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
+	GetWorld()->LineTraceSingleByObjectType(
+		OUT HitResult,
+		GetReachStart(),
+		GetReachEnd(),
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		TraceParameters
+	);
+	return HitResult;
 }
