@@ -27,16 +27,28 @@ void UDoor::BeginPlay()
 void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (doorIsBroken) return;
 
-	if (PressurePlate && ActorThatTriggers && PressurePlate->IsOverlappingActor(ActorThatTriggers)) {
+	if (PressurePlate && ActorThatTriggers && PressurePlate->IsOverlappingActor(ActorMasterKey)) {
 		OpenDoor();
 		DoorLastOpenTime = GetWorld()->GetTimeSeconds();
 	}
 	else if(DoorLastOpenTime + DoorCloseDelay < GetWorld()->GetTimeSeconds()){
 		CloseDoor();
 	}
+	/*
+	else if (PressurePlate && ActorThatTriggers && GetForceApplied() > 50.0f) {
+		OpenDoor();
+		doorIsBroken = true;
+	}
+	*/
+	///
+	UPhysicsCollisionHandler collisionHandler;
+}
 
-	
+
+float UDoor::GetForceApplied() {
+	return 60.f;
 }
 
 

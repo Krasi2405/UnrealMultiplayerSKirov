@@ -45,5 +45,9 @@ private:
 	float DoorLastOpenTime;
 
 	AActor* ActorThatTriggers; // Pawn inherits from actor
+	AActor* ActorMasterKey;
+	float GetForceApplied();
+
+	bool doorIsBroken = false;
 	
 };
