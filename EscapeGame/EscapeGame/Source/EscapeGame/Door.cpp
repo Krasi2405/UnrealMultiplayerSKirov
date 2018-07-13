@@ -29,7 +29,7 @@ void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (doorIsBroken) return;
 
-	if (PressurePlate && ActorThatTriggers && PressurePlate->IsOverlappingActor(ActorMasterKey)) {
+	if (PressurePlate && ActorMasterKey && PressurePlate->IsOverlappingActor(ActorMasterKey)) {
 		OpenDoor();
 		DoorLastOpenTime = GetWorld()->GetTimeSeconds();
 	}
@@ -43,7 +43,7 @@ void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 	}
 	*/
 	///
-	UPhysicsCollisionHandler collisionHandler;
+	//UPhysicsCollisionHandler collisionHandler;
 }
 
 
