@@ -18,7 +18,7 @@ UDoor::UDoor()
 void UDoor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	float closedDoorAngle = GetOwner()->GetActorRotation().Yaw;
 	ActorThatTriggers = GetWorld()->GetFirstPlayerController()->GetPawn();
 	AActor* owner = GetOwner();
 	UPrimitiveComponent* component = owner->FindComponentByClass<UPrimitiveComponent>();
@@ -38,17 +38,17 @@ void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (doorIsBroken) return;
 
-	if (PressurePlate && ActorMasterKey && PressurePlate->IsOverlappingActor(ActorMasterKey)) {
+	if (PressurePlate && ActorThatTriggers && PressurePlate->IsOverlappingActor(ActorThatTriggers)) {
 		OpenDoor();
-		UE_LOG(LogTemp, Warning, TEXT("Open Door!"));
+		UE_LOG(LogTemp, Warning, TEXT("Door open for %s"), *GetOwner()->GetName())
 		DoorLastOpenTime = GetWorld()->GetTimeSeconds();
 	}
 	else if(DoorLastOpenTime + DoorCloseDelay < GetWorld()->GetTimeSeconds()){
-		UE_LOG(LogTemp, Warning, TEXT("Close Door!"));
+		UE_LOG(LogTemp, Warning, TEXT("Door close for %s"), *GetOwner()->GetName())
 		CloseDoor();
 	}
 	/*
-	else if (PressurePlate && ActorThatTriggers && GetForceApplied() > 50.0f) {
+	else if (PressurePlate && GetForceApplied() > 50.0f) {
 		OpenDoor();
 		doorIsBroken = true;
 	}
@@ -72,6 +72,6 @@ void UDoor::OpenDoor() {
 
 void UDoor::CloseDoor() {
 	AActor* Owner = GetOwner();
-	FRotator* NewRotation = new FRotator(0.0f, openAngle - 90.0f, 0.0f);
+	FRotator* NewRotation = new FRotator(0.0f, closedDoorAngle, 0.0f);
 	Owner->SetActorRotation(*NewRotation);
 }
