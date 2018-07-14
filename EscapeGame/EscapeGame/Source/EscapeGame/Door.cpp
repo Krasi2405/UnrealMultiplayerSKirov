@@ -29,7 +29,11 @@ void UDoor::BeginPlay()
 }
 
 void UDoor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-	UE_LOG(LogTemp, Warning, TEXT("hit!"))
+	UE_LOG(LogTemp, Warning, TEXT("hit by %s with velocity %s!"), *OtherActor->GetName(), *OtherActor->GetVelocity().ToString())
+		
+	if (PressurePlate->IsOverlappingActor(OtherActor)) {
+		UE_LOG(LogTemp, Warning, TEXT("Hit on door knob!"))
+	}
 }
 
 // Called every frame
@@ -38,13 +42,14 @@ void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (doorIsBroken) return;
 
+	/*
 	if (PressurePlate && ActorThatTriggers && PressurePlate->IsOverlappingActor(ActorThatTriggers)) {
 		OpenDoor();
-		UE_LOG(LogTemp, Warning, TEXT("Door open for %s"), *GetOwner()->GetName())
+		// UE_LOG(LogTemp, Warning, TEXT("Door open for %s"), *GetOwner()->GetName())
 		DoorLastOpenTime = GetWorld()->GetTimeSeconds();
 	}
 	else if(DoorLastOpenTime + DoorCloseDelay < GetWorld()->GetTimeSeconds()){
-		UE_LOG(LogTemp, Warning, TEXT("Door close for %s"), *GetOwner()->GetName())
+		// UE_LOG(LogTemp, Warning, TEXT("Door close for %s"), *GetOwner()->GetName())
 		CloseDoor();
 	}
 	/*
