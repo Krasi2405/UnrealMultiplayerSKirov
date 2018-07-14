@@ -6,6 +6,7 @@
 #include "Engine/TriggerVolume.h"
 #include "Engine/World.h"
 #include "Components/ActorComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "Door.generated.h"
 
 
@@ -42,12 +43,18 @@ private:
 	UPROPERTY(EditAnywhere)
 	float DoorCloseDelay = 1.4f;
 
+	UPROPERTY(EditAnywhere)
+	AActor* ActorMasterKey;
+
 	float DoorLastOpenTime;
 
 	AActor* ActorThatTriggers; // Pawn inherits from actor
-	AActor* ActorMasterKey;
+
+	
 	float GetForceApplied();
 
 	bool doorIsBroken = false;
+
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
 };

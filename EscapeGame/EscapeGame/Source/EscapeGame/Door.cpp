@@ -20,8 +20,17 @@ void UDoor::BeginPlay()
 	Super::BeginPlay();
 	
 	ActorThatTriggers = GetWorld()->GetFirstPlayerController()->GetPawn();
+	AActor* owner = GetOwner();
+	UPrimitiveComponent* component = owner->FindComponentByClass<UPrimitiveComponent>();
+	if (component) {
+		UE_LOG(LogTemp, Warning, TEXT("Registered hit event on door!"))
+		component->OnComponentHit.AddDynamic(this, &UDoor::OnHit);
+	}
 }
 
+void UDoor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	UE_LOG(LogTemp, Warning, TEXT("hit!"))
+}
 
 // Called every frame
 void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -31,9 +40,11 @@ void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 
 	if (PressurePlate && ActorMasterKey && PressurePlate->IsOverlappingActor(ActorMasterKey)) {
 		OpenDoor();
+		UE_LOG(LogTemp, Warning, TEXT("Open Door!"));
 		DoorLastOpenTime = GetWorld()->GetTimeSeconds();
 	}
 	else if(DoorLastOpenTime + DoorCloseDelay < GetWorld()->GetTimeSeconds()){
+		UE_LOG(LogTemp, Warning, TEXT("Close Door!"));
 		CloseDoor();
 	}
 	/*
