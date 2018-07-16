@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Door.h"
-#include "GameFramework/Actor.h"
 
 // Sets default values for this component's properties
 UDoor::UDoor()
@@ -18,65 +17,57 @@ UDoor::UDoor()
 void UDoor::BeginPlay()
 {
 	Super::BeginPlay();
-	float closedDoorAngle = GetOwner()->GetActorRotation().Yaw;
-	ActorThatTriggers = GetWorld()->GetFirstPlayerController()->GetPawn();
-	AActor* owner = GetOwner();
-	UPrimitiveComponent* component = owner->FindComponentByClass<UPrimitiveComponent>();
-	if (component) {
-		UE_LOG(LogTemp, Warning, TEXT("Registered hit event on door!"))
-		component->OnComponentHit.AddDynamic(this, &UDoor::OnHit);
-	}
+
 }
 
-void UDoor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-	UE_LOG(LogTemp, Warning, TEXT("hit by %s with velocity %s!"), *OtherActor->GetName(), *OtherActor->GetVelocity().ToString())
-		
-	if (PressurePlate->IsOverlappingActor(OtherActor)) {
-		UE_LOG(LogTemp, Warning, TEXT("Hit on door knob!"))
-	}
-}
+
 
 // Called every frame
 void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (doorIsBroken) return;
 
-	/*
-	if (PressurePlate && ActorThatTriggers && PressurePlate->IsOverlappingActor(ActorThatTriggers)) {
+	if(OpenDoorTrigger) 
+	{
+		OpenDoorTrigger = false;
 		OpenDoor();
-		// UE_LOG(LogTemp, Warning, TEXT("Door open for %s"), *GetOwner()->GetName())
-		DoorLastOpenTime = GetWorld()->GetTimeSeconds();
 	}
-	else if(DoorLastOpenTime + DoorCloseDelay < GetWorld()->GetTimeSeconds()){
-		// UE_LOG(LogTemp, Warning, TEXT("Door close for %s"), *GetOwner()->GetName())
+	else if(CloseDoorTrigger) 
+	{
+		CloseDoorTrigger = false;
 		CloseDoor();
 	}
-	/*
-	else if (PressurePlate && GetForceApplied() > 50.0f) {
-		OpenDoor();
-		doorIsBroken = true;
+}
+
+
+void UDoor::SetOpenDoorTrigger()
+{
+	if(DoorTriggersLocked != true) {
+		OpenDoorTrigger = true;
 	}
-	*/
-	///
-	//UPhysicsCollisionHandler collisionHandler;
 }
 
-
-float UDoor::GetForceApplied() {
-	return 60.f;
+void UDoor::SetCloseDoorTrigger()
+{
+	if (DoorTriggersLocked != true)
+	{
+		CloseDoorTrigger = true;
+	}
 }
 
-
-void UDoor::OpenDoor() {
+void UDoor::OpenDoor() 
+{
 	AActor* Owner = GetOwner();
 	FRotator* NewRotation = new FRotator(0.0f, openAngle, 0.0f);
 	Owner->SetActorRotation(*NewRotation);
 }
 
 
-void UDoor::CloseDoor() {
+void UDoor::CloseDoor() 
+{
 	AActor* Owner = GetOwner();
 	FRotator* NewRotation = new FRotator(0.0f, closedDoorAngle, 0.0f);
 	Owner->SetActorRotation(*NewRotation);
 }
+
+

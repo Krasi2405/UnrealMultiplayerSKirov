@@ -8,18 +8,19 @@
 #include "Components/ActorComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
-#include "Door.generated.h"
 
+#include "Door.h"
+#include "DoorPressurePlateComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class ESCAPEGAME_API UDoor : public UActorComponent
+class ESCAPEGAME_API UDoorPressurePlateComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UDoor();
+	UDoorPressurePlateComponent();
 
 protected:
 	// Called when the game starts
@@ -29,34 +30,19 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	virtual void OpenDoor();
-
-	virtual void CloseDoor();
-
-	UPROPERTY(EditAnywhere)
-	bool DoorTriggersLocked = false;
-
-	void SetOpenDoorTrigger();
-
-	void SetCloseDoorTrigger();
-
 private:
 
-	UPROPERTY(EditAnywhere)
-	float openAngle = 90.0f;
+	UDoor* DoorScript;
 
 	UPROPERTY(EditAnywhere)
-	float closedDoorAngle = 0.f;
+	float DoorCloseDelay = 1.4f;
+
+	UPROPERTY(VisibleAnywhere)
+	float DoorLastOpenTime;
 
 	UPROPERTY(EditAnywhere)
-	bool OpenDoorTrigger = false;
+	ATriggerVolume* TriggerVolume;
 
-	UPROPERTY(EditAnywhere)
-	bool CloseDoorTrigger = true;
-
-	UPROPERTY(EditAnywhere)
-	AActor* ActorMasterKey;
-
+	AActor* ActorThatTriggers; // Pawn inherits from actor
 	
-
 };
