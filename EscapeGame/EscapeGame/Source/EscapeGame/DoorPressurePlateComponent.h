@@ -41,8 +41,11 @@ private:
 	float DoorLastOpenTime;
 
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* TriggerVolume;
+	float MassActivationThreshold = 50.f;
 
-	AActor* ActorThatTriggers; // Pawn inherits from actor
+	UPROPERTY(EditAnywhere)
+	ATriggerVolume* PressurePlate;
+
+	float GetTotalMassOfActorsOnPressurePlate();
 	
 };

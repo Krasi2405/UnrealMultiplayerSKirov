@@ -20,7 +20,6 @@ void UDoorPressurePlateComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	ActorThatTriggers = GetWorld()->GetFirstPlayerController()->GetPawn();
 	DoorScript = GetOwner()->FindComponentByClass<UDoor>();
 }
 
@@ -31,7 +30,7 @@ void UDoorPressurePlateComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 
-	if (TriggerVolume && ActorThatTriggers && TriggerVolume->IsOverlappingActor(ActorThatTriggers)) {
+	if (PressurePlate && GetTotalMassOfActorsOnPressurePlate() >= MassActivationThreshold) {
 		DoorScript->SetOpenDoorTrigger();
 		// UE_LOG(LogTemp, Warning, TEXT("Door open for %s"), *GetOwner()->GetName())
 		DoorLastOpenTime = GetWorld()->GetTimeSeconds();
@@ -40,5 +39,21 @@ void UDoorPressurePlateComponent::TickComponent(float DeltaTime, ELevelTick Tick
 		// UE_LOG(LogTemp, Warning, TEXT("Door close for %s"), *GetOwner()->GetName())
 		DoorScript->SetCloseDoorTrigger();
 	}
+}
+
+float UDoorPressurePlateComponent::GetTotalMassOfActorsOnPressurePlate()
+{
+	float TotalMass = 0;
+
+	TArray<AActor*> OverlappingActors;
+	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
+	for(const auto* Actor : OverlappingActors) {
+		float ActorWeight = Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		UE_LOG(LogTemp, Warning, TEXT("Name: %s; Weight: %f;"), *(Actor->GetName()), ActorWeight)
+		TotalMass += ActorWeight;
+	}
+
+
+	return TotalMass;
 }
 
