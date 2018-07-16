@@ -29,12 +29,12 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(EditAnywhere)
+	bool DoorTriggersLocked = false;
+
 	virtual void OpenDoor();
 
 	virtual void CloseDoor();
-
-	UPROPERTY(EditAnywhere)
-	bool DoorTriggersLocked = false;
 
 	void SetOpenDoorTrigger();
 
@@ -53,10 +53,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	bool CloseDoorTrigger = true;
-
+	/*
 	UPROPERTY(EditAnywhere)
 	AActor* ActorMasterKey;
-
+	*/
 	
 
 };

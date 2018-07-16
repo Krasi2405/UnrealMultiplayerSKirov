@@ -64,7 +64,7 @@ void UGrabber::Grab() {
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
 	AActor* ActorHit = HitResult.GetActor();
-	if (ActorHit)
+	if (ActorHit && ComponentToGrab)
 	{
 		PhysicsHandleComponent->GrabComponentAtLocation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation());
 		UE_LOG(LogTemp, Warning, TEXT("Grabber raycast hit: %s"), *(ActorHit->GetName()))
@@ -93,7 +93,6 @@ FVector UGrabber::GetReachStart() {
 
 FVector UGrabber::GetReachEnd() {
 	FPlayerOrientation PlayerOrientation = GetPlayerOrientation();
-
 	FVector ReachEnd = PlayerOrientation.PlayerViewPointLocation + PlayerOrientation.PlayerViewPointRotation.Vector() * Reach;
 	return ReachEnd;
 }

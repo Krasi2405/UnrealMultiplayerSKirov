@@ -22,10 +22,18 @@ void UBreakableDoorComponent::BeginPlay()
 	DoorScript = GetOwner()->FindComponentByClass<UDoor>();
 
 	UPrimitiveComponent* component = GetOwner()->FindComponentByClass<UPrimitiveComponent>();
-	if (component) {
-		UE_LOG(LogTemp, Warning, TEXT("Registered hit event on door!"))
+	if (component && DoorScript) {
 		component->OnComponentHit.AddDynamic(this, &UBreakableDoorComponent::OnHit);
 	}
+	else
+	{
+		if (!DoorScript)
+			UE_LOG(LogTemp, Error, TEXT("DoorBreakableComponent: Door script missing!"))
+		if (!component)
+			UE_LOG(LogTemp, Error, TEXT("DoorBreakableComponent: Couldn't get UPrimitiveComponent!"))
+	}
+
+	
 }
 
 
