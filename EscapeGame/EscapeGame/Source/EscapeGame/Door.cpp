@@ -57,17 +57,23 @@ void UDoor::SetCloseDoorTrigger()
 
 void UDoor::OpenDoor() 
 {
+	/*
 	AActor* Owner = GetOwner();
 	FRotator* NewRotation = new FRotator(0.0f, openAngle, 0.0f);
 	Owner->SetActorRotation(*NewRotation);
+	*/
+	OpenRequest.Broadcast();
 }
 
 
 void UDoor::CloseDoor() 
 {
+	/*
 	AActor* Owner = GetOwner();
 	FRotator* NewRotation = new FRotator(0.0f, closedDoorAngle, 0.0f);
 	Owner->SetActorRotation(*NewRotation);
+	*/
+	CloseRequest.Broadcast();
 }
 
 

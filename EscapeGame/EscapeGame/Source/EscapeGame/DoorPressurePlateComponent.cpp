@@ -23,9 +23,9 @@ void UDoorPressurePlateComponent::BeginPlay()
 	DoorScript = GetOwner()->FindComponentByClass<UDoor>();
 
 	if (!DoorScript)
-		UE_LOG(LogTemp, Error, TEXT("DoorPressurePlateComponent: Door script missing!"))
+		UE_LOG(LogTemp, Error, TEXT("%s: Door script missing!"), *GetOwner()->GetName())
 	if (!PressurePlate)
-		UE_LOG(LogTemp, Error, TEXT("DoorPressurePlateComponent: Pressure plate missing!"))
+		UE_LOG(LogTemp, Error, TEXT("%s: Pressure plate missing!"), *GetOwner()->GetName())
 }
 
 
@@ -34,7 +34,7 @@ void UDoorPressurePlateComponent::TickComponent(float DeltaTime, ELevelTick Tick
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(!PressurePlate || !DoorScript) 
+	if (!PressurePlate || !DoorScript)
 	{
 		return;
 	}

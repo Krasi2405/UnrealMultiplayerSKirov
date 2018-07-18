@@ -10,7 +10,7 @@
 #include "GameFramework/Actor.h"
 #include "Door.generated.h"
 
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDoorEvent);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ESCAPEGAME_API UDoor : public UActorComponent
@@ -40,13 +40,13 @@ public:
 
 	void SetCloseDoorTrigger();
 
+	UPROPERTY(BlueprintAssignable)
+	FDoorEvent OpenRequest;
+
+	UPROPERTY(BlueprintAssignable)
+	FDoorEvent CloseRequest;
+
 private:
-
-	UPROPERTY(EditAnywhere)
-	float openAngle = 90.0f;
-
-	UPROPERTY(EditAnywhere)
-	float closedDoorAngle = 0.f;
 
 	UPROPERTY(EditAnywhere)
 	bool OpenDoorTrigger = false;

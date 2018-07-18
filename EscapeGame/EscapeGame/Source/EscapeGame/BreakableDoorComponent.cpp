@@ -28,9 +28,9 @@ void UBreakableDoorComponent::BeginPlay()
 	else
 	{
 		if (!DoorScript)
-			UE_LOG(LogTemp, Error, TEXT("DoorBreakableComponent: Door script missing!"))
+			UE_LOG(LogTemp, Error, TEXT("%s: Door script missing!"), *GetOwner()->GetName())
 		if (!component)
-			UE_LOG(LogTemp, Error, TEXT("DoorBreakableComponent: Couldn't get UPrimitiveComponent!"))
+			UE_LOG(LogTemp, Error, TEXT("%s: Couldn't get UPrimitiveComponent!"), *GetOwner()->GetName())
 	}
 
 	

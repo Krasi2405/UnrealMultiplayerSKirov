@@ -32,8 +32,6 @@ public:
 
 private:
 
-	UDoor* DoorScript;
-
 	UPROPERTY(EditAnywhere)
 	float DoorCloseDelay = 1.4f;
 
@@ -45,6 +43,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
+
+	UDoor* DoorScript;
 
 	float GetTotalMassOfActorsOnPressurePlate();
 	

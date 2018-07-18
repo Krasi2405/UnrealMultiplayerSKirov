@@ -2,8 +2,6 @@
 
 #include "Grabber.h"
 
-
-
 // Sets default values for this component's properties
 UGrabber::UGrabber()
 {
@@ -90,6 +88,7 @@ UGrabber::FPlayerOrientation UGrabber::GetPlayerOrientation() {
 FVector UGrabber::GetReachStart() {
 	return GetPlayerOrientation().PlayerViewPointLocation;
 }
+
 
 FVector UGrabber::GetReachEnd() {
 	FPlayerOrientation PlayerOrientation = GetPlayerOrientation();
