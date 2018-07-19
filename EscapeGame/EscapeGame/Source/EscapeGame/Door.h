@@ -32,6 +32,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool DoorTriggersLocked = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door rotation")
+	bool DoorSwitchRotationSide = false;
+	
 	virtual void OpenDoor();
 
 	virtual void CloseDoor();
