@@ -33,7 +33,7 @@ public:
 	bool DoorTriggersLocked = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door rotation")
-	bool DoorSwitchRotationSide = false;
+	float RotationDuration = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door rotation")
 	float RotationAngle = 90;
