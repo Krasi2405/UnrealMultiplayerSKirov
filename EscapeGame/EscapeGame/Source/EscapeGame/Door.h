@@ -34,7 +34,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door rotation")
 	bool DoorSwitchRotationSide = false;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door rotation")
+	float RotationDuration = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door rotation")
+	float RotationAngle = 90;
+
 	virtual void OpenDoor();
 
 	virtual void CloseDoor();
