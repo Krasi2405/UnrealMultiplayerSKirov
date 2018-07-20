@@ -48,6 +48,10 @@ void UDoorPressurePlateComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	{
 		DoorScript->SetCloseDoorTrigger();
 	}
+	else 
+	{
+		DoorScript->SetChillRequest();
+	}
 }
 
 float UDoorPressurePlateComponent::GetTotalMassOfActorsOnPressurePlate()

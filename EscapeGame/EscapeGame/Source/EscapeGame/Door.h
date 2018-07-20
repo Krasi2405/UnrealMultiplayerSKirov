@@ -46,11 +46,17 @@ public:
 
 	void SetCloseDoorTrigger();
 
+	void SetChillRequest();
+
 	UPROPERTY(BlueprintAssignable)
 	FDoorEvent OpenRequest;
 
 	UPROPERTY(BlueprintAssignable)
 	FDoorEvent CloseRequest;
+
+	UPROPERTY(BlueprintAssignable)
+	FDoorEvent ChillRequest;
+
 
 private:
 
@@ -59,6 +65,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	bool CloseDoorTrigger = true;
+
+	UPROPERTY(EditAnywhere)
+	bool ChillTrigger = true;
 	/*
 	UPROPERTY(EditAnywhere)
 	AActor* ActorMasterKey;

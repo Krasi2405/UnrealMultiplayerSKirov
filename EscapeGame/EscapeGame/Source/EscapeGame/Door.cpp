@@ -37,6 +37,11 @@ void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 		CloseDoorTrigger = false;
 		CloseDoor();
 	}
+	else if(ChillTrigger)
+	{
+		ChillTrigger = false;
+		ChillRequest.Broadcast();
+	}
 }
 
 
@@ -55,6 +60,14 @@ void UDoor::SetCloseDoorTrigger()
 	}
 }
 
+void UDoor::SetChillRequest() 
+{
+	if (DoorTriggersLocked != true)
+	{
+		ChillTrigger = true;
+	}
+}
+
 void UDoor::OpenDoor() 
 {
 	/*
@@ -62,6 +75,7 @@ void UDoor::OpenDoor()
 	FRotator* NewRotation = new FRotator(0.0f, openAngle, 0.0f);
 	Owner->SetActorRotation(*NewRotation);
 	*/
+	UE_LOG(LogTemp, Warning, TEXT("DOOR OPENING!"))
 	OpenRequest.Broadcast();
 }
 
