@@ -21,8 +21,14 @@ void USecurityCamera::BeginPlay()
 
 	Target = GetWorld()->GetFirstPlayerController()->GetPawnOrSpectator();
 	APawn *pawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	
-	TargetPawnCameraHeight = pawn->BaseEyeHeight;
+	if (pawn) 
+	{
+		TargetPawnCameraHeight = pawn->BaseEyeHeight;
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player not controlling a pawn."))
+	}
 }
 
 
