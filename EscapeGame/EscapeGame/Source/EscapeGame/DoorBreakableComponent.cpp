@@ -10,7 +10,6 @@ UDoorBreakableComponent::UDoorBreakableComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
 
@@ -18,6 +17,10 @@ UDoorBreakableComponent::UDoorBreakableComponent()
 void UDoorBreakableComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+
+	AActor* player = GetWorld()->GetFirstPlayerController()->GetPawn();
+	IgnoreActors.Add(player);
 
 	DoorScript = GetOwner()->FindComponentByClass<UDoor>();
 
@@ -46,12 +49,38 @@ void UDoorBreakableComponent::TickComponent(float DeltaTime, ELevelTick TickType
 }
 
 void UDoorBreakableComponent::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-	UE_LOG(LogTemp, Warning, TEXT("hit by %s with velocity %s!"), *OtherActor->GetName(), *OtherActor->GetVelocity().ToString())
+	
+	if (DoorBroke) return;
 
 	if (DoorKnobArea && DoorKnobArea->IsOverlappingActor(OtherActor)) {
-		UE_LOG(LogTemp, Warning, TEXT("Hit on door knob by breakable door component!"))
-		DoorScript->SetOpenDoorTrigger();
-		DoorScript->DoorTriggersLocked = true;
+
+		for(int i = 0; i < IgnoreActors.Num(); i++) 
+		{
+			if(IgnoreActors[i] == OtherActor) 
+			{
+				return;
+			}
+		}
+
+
+		FVector FrontVector = GetOwner()->GetActorForwardVector();
+		FVector ForceVector = OtherActor->GetVelocity().ProjectOnTo(FrontVector);
+		
+		UE_LOG(LogTemp, Warning, TEXT("Force Vector: %s"), *ForceVector.ToString())
+
+		// Divide by 100 because Unreal units are centimeters and Force = Mass(kg) * Velocity(m/s)
+		float ImpactForce =
+			OtherActor->FindComponentByClass<UPrimitiveComponent>()->GetMass() *
+			FMath::Sqrt(ForceVector.SizeSquared()) / 100;
+			
+
+		if (ImpactForce >= ForceToBreak)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Door broke with a force of %f newtons"), ImpactForce)
+			DoorScript->SetOpenDoorTrigger();
+			DoorScript->DoorTriggersLocked = true;
+			DoorBroke = true;
+		}
 	}
 }
 

@@ -36,6 +36,14 @@ private:
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* DoorKnobArea;
 
+	UPROPERTY(EditAnywhere)
+	TArray<AActor*> IgnoreActors;
+
+	UPROPERTY(EditAnywhere)
+	float ForceToBreak = 100;
+
+	float DoorBroke = false;
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
