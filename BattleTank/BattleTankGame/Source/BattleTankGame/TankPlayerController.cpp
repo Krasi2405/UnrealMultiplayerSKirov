@@ -2,15 +2,11 @@
 
 #include "TankPlayerController.h"
 
-ATank* ATankPlayerController::GetControlTank() const 
-{
-	return Cast<ATank>(GetPawn());
-}
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	ATank* ControlledTank = GetControlTank();
 	if(!ControlledTank) {
 		UE_LOG(LogTemp, Warning, TEXT("No tank!"))
@@ -18,5 +14,119 @@ void ATankPlayerController::BeginPlay()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController possessing %s"), *ControlledTank->GetName())
+	}
+
+	CreatePlayerUI();
+	
+}
+
+
+void ATankPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	AimTowardsCrosshair();
+}
+
+void ATankPlayerController::CreatePlayerUI()
+{
+	if (wPlayerUI)
+	{
+		PlayerUI = CreateWidget<UUserWidget>(this, wPlayerUI);
+		if (PlayerUI)
+		{
+			PlayerUI->AddToViewport();
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Main menu widget!"))
+	}
+}
+
+
+FVector2D ATankPlayerController::GetAimingReticlePosition() const
+{
+	UWidget* AimingReticle = PlayerUI->GetWidgetFromName("AimingReticle");
+	if (AimingReticle)
+	{
+		UCanvasPanelSlot* CanvasSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(AimingReticle);
+		float Scale = UWidgetLayoutLibrary::GetViewportScale(GetWorld()->GetGameViewport());
+		int ViewportX;
+		int ViewportY;
+		GetViewportSize(ViewportX, ViewportY);
+		FVector2D CanvasSlotPosition = CanvasSlot->GetPosition();
+		FVector2D Position = {ViewportX / 2.f, ViewportY / 3.f};
+		UE_LOG(LogTemp, Warning, TEXT("Position: %s"), *Position.ToString())
+		FVector2D PositionTest = { ViewportX / 2 + CanvasSlotPosition.X * Scale, ViewportY / 2 + CanvasSlotPosition.Y * Scale };
+		UE_LOG(LogTemp, Warning, TEXT("Test Position: %s"), *PositionTest.ToString())
+		return PositionTest;
+	}
+	return FVector2D::ZeroVector;
+}
+
+ATank* ATankPlayerController::GetControlTank() const
+{
+	return Cast<ATank>(GetPawn());
+}
+
+
+void ATankPlayerController::AimTowardsCrosshair()
+{
+	if (!GetControlTank()) return;
+
+	FVector HitLocation;
+	if (GetSightRayHitLocation(HitLocation)) {
+		UE_LOG(LogTemp, Warning, TEXT("HitLocation %s"), *HitLocation.ToString())
+		ATank* Controlledtank = GetControlTank();
+
+	}
+
+}
+
+bool ATankPlayerController::GetSightRayHitLocation(FVector &HitLocation) const
+{
+	HitLocation = FVector::ForwardVector;
+	FVector2D ScreenLocation = GetAimingReticlePosition();
+
+	FVector CameraWorldLocation;
+	FVector CameraDirection;
+	FVector HitPosition;
+	if (DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CameraWorldLocation, CameraDirection)) 
+	{
+		/*
+		if(GetLookVectorHitLocation(CameraWorldLocation, CameraDirection, HitPosition)) 
+		{
+
+		}
+		*/
+	}
+	return true;
+}
+
+bool ATankPlayerController::GetLookVectorHitLocation(FVector Start, FVector Direction, FVector &HitLocation) const
+{
+	FHitResult OutResult;
+	FCollisionQueryParams CollisionQuery = { "", false, GetControlTank() };
+
+	bool bHasHit = GetWorld()->LineTraceSingleByChannel(
+		OutResult,
+		Start,
+		Start + Direction * LineTraceRange,
+		ECC_Visibility,
+		CollisionQuery
+	);
+
+	DrawDebugLine(GetWorld(), Start, Start + Direction * LineTraceRange, FColor(255, 0, 0), false, -1, 0, 15.f);
+
+	if(bHasHit)
+	{
+		HitLocation = OutResult.Location;
+		return true;
+	}
+	else
+	{
+		HitLocation = FVector::ZeroVector;
+		return false;
 	}
 }
