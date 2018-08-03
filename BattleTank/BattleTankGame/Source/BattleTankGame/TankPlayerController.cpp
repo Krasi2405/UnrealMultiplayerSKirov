@@ -7,6 +7,7 @@ void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+
 	ATank* ControlledTank = GetControlTank();
 	if(!ControlledTank) {
 		UE_LOG(LogTemp, Warning, TEXT("No tank!"))
@@ -57,9 +58,7 @@ FVector2D ATankPlayerController::GetAimingReticlePosition() const
 		GetViewportSize(ViewportX, ViewportY);
 		FVector2D CanvasSlotPosition = CanvasSlot->GetPosition();
 		FVector2D Position = {ViewportX / 2.f, ViewportY / 3.f};
-		UE_LOG(LogTemp, Warning, TEXT("Position: %s"), *Position.ToString())
 		FVector2D PositionTest = { ViewportX / 2 + CanvasSlotPosition.X * Scale, ViewportY / 2 + CanvasSlotPosition.Y * Scale };
-		UE_LOG(LogTemp, Warning, TEXT("Test Position: %s"), *PositionTest.ToString())
 		return PositionTest;
 	}
 	return FVector2D::ZeroVector;
