@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAimingComponent.h"
+#include "TankBarrel.h"
+#include "TankTurret.h"
+
 
 
 // Sets default values for this component's properties
@@ -31,9 +34,14 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent* BarrelToSet) 
+void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) 
 {
 	Barrel = BarrelToSet;
+}
+
+void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
+{
+	Turret = TurretToSet;
 }
 
 void UTankAimingComponent::AimAt(FVector AimLocation, float LaunchSpeed)
@@ -43,10 +51,11 @@ void UTankAimingComponent::AimAt(FVector AimLocation, float LaunchSpeed)
 		UE_LOG(LogTemp, Warning, TEXT("%s Aiming from %s to %s"), *GetOwner()->GetName(), *Barrel->GetComponentLocation().ToString(), *AimLocation.ToString())
 
 		FVector AimDirection;
-		bool bHasValidSuggestion = GetAimRotation(AimDirection, AimLocation, LaunchSpeed);
-		if(bHasValidSuggestion) 
+		bool bHasValidAimSuggestion = GetAimRotation(AimDirection, AimLocation, LaunchSpeed);
+		if(bHasValidAimSuggestion) 
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Suggested Velocity: %s"), *AimDirection.ToString());
+			Barrel->Elevate(AimDirection.Rotation().Pitch);
 		}
 	}
 	else 

@@ -3,18 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Tank.h"
 #include "GameFramework/PlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "UObject/ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
+#include "Tank.h"
 #include "TankPlayerController.generated.h"
 
-/**
- * 
- */
+
+
 UCLASS()
 class BATTLETANKGAME_API ATankPlayerController : public APlayerController
 {

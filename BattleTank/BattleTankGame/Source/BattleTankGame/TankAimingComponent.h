@@ -8,6 +8,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "TankAimingComponent.generated.h"
 
+class UTankBarrel;
+class UTankTurret;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANKGAME_API UTankAimingComponent : public UActorComponent
@@ -20,7 +22,9 @@ public:
 
 	void AimAt(FVector AimLocation, float LaunchSpeed);
 
-	void SetBarrelReference(UStaticMeshComponent* BarrelToSet);
+	void SetBarrelReference(UTankBarrel* BarrelToSet);
+
+	void SetTurretReference(UTankTurret* TurretToSet);
 
 protected:
 	// Called when the game starts
@@ -31,8 +35,14 @@ protected:
 
 
 private:	
-	UStaticMeshComponent* Barrel = nullptr;
+	float BarrelElevationSpeed = 20.f;
+
+	float TurretRotationSpeed = 25.f;
+
+	UTankBarrel* Barrel = nullptr;
+
+	UTankTurret* Turret = nullptr;
 	
 	bool GetAimRotation(FVector &AimDirection, FVector AimLocation, float LaunchSpeed);
-	
+
 };
