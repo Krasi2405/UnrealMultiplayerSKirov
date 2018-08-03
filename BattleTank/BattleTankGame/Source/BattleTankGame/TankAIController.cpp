@@ -30,7 +30,7 @@ void ATankAIController::BeginPlay()
 
 void ATankAIController::Tick(float DeltaTime)
 {
-
+	GetControlTank()->AimAt(GetPlayer()->GetActorLocation());
 }
 
 
