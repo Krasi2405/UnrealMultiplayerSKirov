@@ -41,24 +41,11 @@ void UTankAimingComponent::AimAt(FVector AimLocation, float LaunchSpeed)
 	if (Barrel)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s Aiming from %s to %s"), *GetOwner()->GetName(), *Barrel->GetComponentLocation().ToString(), *AimLocation.ToString())
-		
-		FVector ProjectileVelocity;
-		FCollisionResponseParams CollisionResponse;
-		TArray<AActor*> ObjectsToIgnore;
-		ObjectsToIgnore.Add(GetOwner());
-		if (UGameplayStatics::SuggestProjectileVelocity(
-			this,
-			ProjectileVelocity,
-			Barrel->GetComponentLocation(),
-			AimLocation,
-			LaunchSpeed,
-			false,
-			0,
-			0,
-			ESuggestProjVelocityTraceOption::DoNotTrace
-		)) 
+
+		FVector AimDirection;
+		bool bHasValidSuggestion = GetAimRotation(AimDirection, AimLocation, LaunchSpeed);
+		if(bHasValidSuggestion) 
 		{
-			FVector AimDirection = ProjectileVelocity.GetSafeNormal();
 			UE_LOG(LogTemp, Warning, TEXT("Suggested Velocity: %s"), *AimDirection.ToString());
 		}
 	}
@@ -66,4 +53,31 @@ void UTankAimingComponent::AimAt(FVector AimLocation, float LaunchSpeed)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Barrel reference not set on %s"), *GetOwner()->GetName())
 	}
+}
+
+bool UTankAimingComponent::GetAimRotation(FVector &AimDirection, FVector AimLocation, float LaunchSpeed) 
+{
+	FVector ProjectileVelocity;
+	FCollisionResponseParams CollisionResponse;
+	TArray<AActor*> ObjectsToIgnore;
+	ObjectsToIgnore.Add(GetOwner());
+
+	bool bHasSuggestion = UGameplayStatics::SuggestProjectileVelocity(
+		this,
+		ProjectileVelocity,
+		Barrel->GetComponentLocation(),
+		AimLocation,
+		LaunchSpeed,
+		false,
+		0,
+		0,
+		ESuggestProjVelocityTraceOption::DoNotTrace
+	);
+
+	if (bHasSuggestion)
+	{
+		AimDirection = ProjectileVelocity.GetSafeNormal();
+		return true;
+	}
+	return false;
 }

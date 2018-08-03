@@ -32,6 +32,7 @@ protected:
 
 private:	
 	UStaticMeshComponent* Barrel = nullptr;
-		
+	
+	bool GetAimRotation(FVector &AimDirection, FVector AimLocation, float LaunchSpeed);
 	
 };
