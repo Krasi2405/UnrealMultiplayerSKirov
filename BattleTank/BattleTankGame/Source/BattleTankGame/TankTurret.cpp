@@ -10,58 +10,40 @@ void UTankTurret::Rotate(float TargetValue)
 	float YawChange = MaxDegreesPerSecond * GetWorld()->DeltaTimeSeconds;
 	float NewYaw;
 
-	// TODO: Rework this monstrosity.
-	// Could not work out how to create an elegant solution.
-	// So heres a piece of shit that works:
-	if(Yaw >= 0.f)
+	// Edge case of positive rotation of barrel having to go into negative.
+	if(Yaw >= 0.f && TargetValue < 0)
 	{
-		if(TargetValue < 0)
+		if(Yaw - TargetValue > 180) 
 		{
-			if(Yaw - TargetValue > 180) 
-			{
-				NewYaw = Yaw + YawChange;
-			}
-			else
-			{
-				NewYaw = Yaw - YawChange;
-			}
+			NewYaw = Yaw + YawChange;
 		}
 		else
 		{
-			if(Yaw > TargetValue)
-			{
-				NewYaw = Yaw - YawChange;
-			}
-			else
-			{
-				NewYaw = Yaw + YawChange;
-			}
-			
+			NewYaw = Yaw - YawChange;
 		}
 	}
-	else
+	// Edge case of negative rotation of barrel having to go into positive.
+	else if (Yaw < 0.f && TargetValue > 0)
 	{
-		if(TargetValue > 0)
+		if (TargetValue - Yaw > 180)
 		{
-			if(TargetValue - Yaw > 180)
-			{
-				NewYaw = Yaw - YawChange;
-			}
-			else
-			{
-				NewYaw = Yaw + YawChange;
-			}
+			NewYaw = Yaw - YawChange;
 		}
 		else
 		{
-			if (Yaw > TargetValue)
-			{
-				NewYaw = Yaw - YawChange;
-			}
-			else
-			{
-				NewYaw = Yaw + YawChange;
-			}
+			NewYaw = Yaw + YawChange;
+		}
+	}
+	// Normal turret rotation
+	else
+	{
+		if (Yaw > TargetValue)
+		{
+			NewYaw = Yaw - YawChange;
+		}
+		else
+		{
+			NewYaw = Yaw + YawChange;
 		}
 	}
 
