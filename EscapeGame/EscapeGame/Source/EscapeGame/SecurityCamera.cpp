@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Kismet/KismetMathLibrary.h"
+#include "Engine/World.h"
 #include "SecurityCamera.h"
 
 
@@ -38,5 +40,120 @@ void USecurityCamera::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+	LookAtTarget();
 }
 
+
+void USecurityCamera::SetupCamera(UStaticMeshComponent* HorizontalRotator, UStaticMeshComponent* VerticalRotator)
+{
+	if (HorizontalRotator)
+	{
+		HorizontalRotationPoint = HorizontalRotator;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Security Camera has no Horizontal Rotator StaticMeshComponent assigned!"));
+	}
+
+	if (VerticalRotator)
+	{
+		VerticalRotationPoint = VerticalRotator;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Security Camera has no Vertical Rotator StaticMeshComponent assigned!"));
+	}
+}
+
+
+void USecurityCamera::LookAtTarget()
+{
+	FVector PlayerLocation = Target->GetActorLocation();
+	PlayerLocation.Z += TargetPawnCameraHeight;
+	FRotator VerticalRotation = UKismetMathLibrary::FindLookAtRotation(
+		VerticalRotationPoint->GetComponentLocation(),
+		PlayerLocation
+	);
+
+	FRotator HorizontalRotation = UKismetMathLibrary::FindLookAtRotation(
+		HorizontalRotationPoint->GetComponentLocation(),
+		Target->GetActorLocation()
+	);
+
+	if(VerticalRotationPoint)
+		RotateVerticalPart(VerticalRotation.Pitch);
+
+	if(HorizontalRotationPoint)
+		RotateHorizontalPart(HorizontalRotation.Yaw);
+}
+
+
+void USecurityCamera::RotateVerticalPart(float TargetValue)
+{
+	float Pitch = VerticalRotationPoint->RelativeRotation.Pitch;
+	float PitchChange = VerticalMovementSpeedPerSecond * GetWorld()->DeltaTimeSeconds;
+	if (TargetValue < Pitch) PitchChange *= -1;
+
+	float NewPitch = Pitch + PitchChange;
+
+	NewPitch = FMath::Clamp(NewPitch, MinPitch, MaxPitch);
+
+	// Stabilize Rotation;
+	if (Pitch < TargetValue && NewPitch > TargetValue || Pitch > TargetValue && NewPitch < TargetValue)
+	{
+		NewPitch = TargetValue;
+	}
+
+
+	VerticalRotationPoint->SetRelativeRotation(FRotator(NewPitch, 0, 0));
+}
+
+
+void USecurityCamera::RotateHorizontalPart(float TargetValue)
+{
+	float Yaw = HorizontalRotationPoint->RelativeRotation.Yaw;
+	float YawChange = HorizontalMovementSpeedPerSecond * GetWorld()->DeltaTimeSeconds;
+	float NewYaw;
+
+	if (Yaw >= 0.f && TargetValue < 0)
+	{
+		if (Yaw - TargetValue > 180)
+		{
+			NewYaw = Yaw + YawChange;
+		}
+		else
+		{
+			NewYaw = Yaw - YawChange;
+		}
+	}
+	else if (Yaw < 0.f && TargetValue > 0)
+	{
+		if (TargetValue - Yaw > 180)
+		{
+			NewYaw = Yaw - YawChange;
+		}
+		else
+		{
+			NewYaw = Yaw + YawChange;
+		}
+	}
+	else
+	{
+		if (Yaw > TargetValue)
+		{
+			NewYaw = Yaw - YawChange;
+		}
+		else
+		{
+			NewYaw = Yaw + YawChange;
+		}
+	}
+
+	// Stabilize Rotation;
+	if (Yaw < TargetValue && NewYaw > TargetValue || Yaw > TargetValue && NewYaw < TargetValue)
+	{
+		NewYaw = TargetValue;
+	}
+
+	HorizontalRotationPoint->SetRelativeRotation(FRotator(0, NewYaw, 0));
+}
