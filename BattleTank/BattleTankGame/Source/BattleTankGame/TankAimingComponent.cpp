@@ -54,8 +54,13 @@ void UTankAimingComponent::AimAt(FVector AimLocation, float LaunchSpeed)
 		bool bHasValidAimSuggestion = GetAimRotation(AimDirection, AimLocation, LaunchSpeed);
 		if(bHasValidAimSuggestion) 
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Suggested Velocity: %s"), *AimDirection.ToString());
+			UE_LOG(LogTemp, Warning, TEXT("%f: Suggested Rotation: %s"), GetWorld()->GetTimeSeconds(), *AimDirection.ToString());
 			Barrel->Elevate(AimDirection.Rotation().Pitch);
+			Turret->Rotate(AimDirection.Rotation().Yaw);
+		}
+		else 
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%f: No valid suggestion!"), GetWorld()->GetTimeSeconds())
 		}
 	}
 	else 
