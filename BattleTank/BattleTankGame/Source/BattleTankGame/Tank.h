@@ -32,7 +32,7 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere, Category = Firing)
-	float LaunchSpeed = 2000.f;
+	float LaunchSpeed = 17000.f;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
