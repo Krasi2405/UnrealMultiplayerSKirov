@@ -29,7 +29,6 @@ void ATank::BeginPlay()
 
 void ATank::AttemptFire()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Attempting Fire when LastFireTime: %f and CurrentTime: %f"), LastFireTime, GetWorld()->GetTimeSeconds())
 	if(CanFire())
 	{
 		LastFireTime = GetWorld()->GetTimeSeconds();
@@ -39,7 +38,11 @@ void ATank::AttemptFire()
 
 void ATank::Fire() 
 {
-	if (!Barrel || !ProjectileBlueprint) return;
+	if (!Barrel || !ProjectileBlueprint) 
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s attempted to fire with no barrel or projectile set!"), *GetName())
+		return;
+	}
 
 	UE_LOG(LogTemp, Warning, TEXT("%s Fires!"), *GetName());
 	FActorSpawnParameters SpawnInfo;

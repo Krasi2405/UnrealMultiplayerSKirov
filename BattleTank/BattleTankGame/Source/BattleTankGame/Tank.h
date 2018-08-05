@@ -35,20 +35,20 @@ protected:
 
 private:
 
-	UPROPERTY(EditAnywhere, Category = Firing)
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	float LaunchSpeed = 17000.f;
 
-	UPROPERTY(EditAnywhere, Category = Firing)
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	float ReloadTime = 3.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	float LastFireTime;
 
 	bool CanFire();
 
 	void Fire();
-
-	UPROPERTY(EditAnywhere, Category = Firing)
-	TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
