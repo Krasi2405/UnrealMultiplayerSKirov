@@ -48,13 +48,10 @@ void UTankAimingComponent::AimAt(FVector AimLocation, float LaunchSpeed)
 {
 	if (Barrel)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Aiming from %s to %s"), *GetOwner()->GetName(), *Barrel->GetComponentLocation().ToString(), *AimLocation.ToString())
-
 		FVector AimDirection;
 		bool bHasValidAimSuggestion = GetAimRotation(AimDirection, AimLocation, LaunchSpeed);
 		if(bHasValidAimSuggestion) 
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%f: Suggested Rotation: %s"), GetWorld()->GetTimeSeconds(), *AimDirection.ToString());
 			Barrel->Elevate(AimDirection.Rotation().Pitch);
 			Turret->Rotate(AimDirection.Rotation().Yaw);
 		}
