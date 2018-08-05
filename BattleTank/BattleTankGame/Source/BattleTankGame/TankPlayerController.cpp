@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "TankPlayerController.h"
-
+#include "UObject/UObjectGlobals.h"
+#include "Components/InputComponent.h"
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
 
-	ATank* ControlledTank = GetControlTank();
+	ControlledTank = Cast<ATank>(GetPawn());
 	if(!ControlledTank) {
 		UE_LOG(LogTemp, Warning, TEXT("No tank!"))
 	}
@@ -19,7 +19,6 @@ void ATankPlayerController::BeginPlay()
 	}
 
 	CreatePlayerUI();
-	
 }
 
 
@@ -29,6 +28,7 @@ void ATankPlayerController::Tick(float DeltaTime)
 
 	AimTowardsCrosshair();
 }
+
 
 void ATankPlayerController::CreatePlayerUI()
 {
@@ -65,24 +65,15 @@ FVector2D ATankPlayerController::GetAimingReticlePosition() const
 	return FVector2D::ZeroVector;
 }
 
-ATank* ATankPlayerController::GetControlTank() const
-{
-	return Cast<ATank>(GetPawn());
-}
-
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!GetControlTank()) return;
+	if (!ControlledTank) return;
 
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation)) 
 	{
-		ATank* ControlledTank = GetControlTank();
-		if(ControlledTank)
-		{
-			ControlledTank->AimAt(HitLocation);
-		}
+		ControlledTank->AimAt(HitLocation);
 	}
 
 }
@@ -107,7 +98,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector &HitLocation) const
 bool ATankPlayerController::GetLookVectorHitLocation(FVector Start, FVector Direction, FVector &HitLocation) const
 {
 	FHitResult OutResult;
-	FCollisionQueryParams CollisionQuery = { "", false, GetControlTank() };
+	FCollisionQueryParams CollisionQuery = { "", false, ControlledTank };
 
 	bool bHasHit = GetWorld()->LineTraceSingleByChannel(
 		OutResult,

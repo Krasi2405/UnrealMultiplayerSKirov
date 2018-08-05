@@ -29,9 +29,9 @@ class BATTLETANKGAME_API ATankPlayerController : public APlayerController
 
 		void BeginPlay() override;
 
-		void CreatePlayerUI();
-
 		void Tick(float DeltaTime) override;
+
+		void CreatePlayerUI();
 
 	private:
 		float LineTraceRange = 1000000;
@@ -40,7 +40,7 @@ class BATTLETANKGAME_API ATankPlayerController : public APlayerController
 
 		FVector2D GetAimingReticlePosition() const;
 
-		ATank* GetControlTank() const;
+		ATank* ControlledTank;
 
 		bool GetSightRayHitLocation(FVector &HitLocation) const;
 

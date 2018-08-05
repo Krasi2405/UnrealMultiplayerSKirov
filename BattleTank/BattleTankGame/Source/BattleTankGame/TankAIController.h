@@ -22,7 +22,7 @@ private:
 
 	void Tick(float DeltaTime) override;
 
-	ATank* GetControlTank() const;
-	
-	ATank* GetPlayer() const;
+	ATank* ControlledTank;
+
+	ATank* PlayerTank;
 };

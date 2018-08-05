@@ -16,7 +16,7 @@ ATank::ATank()
 
 	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("AimingComponent"));
 
-	
+	LastFireTime = 0.f;
 }
 
 
@@ -27,9 +27,19 @@ void ATank::BeginPlay()
 	
 }
 
+void ATank::AttemptFire()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Attempting Fire when LastFireTime: %f and CurrentTime: %f"), LastFireTime, GetWorld()->GetTimeSeconds())
+	if(CanFire())
+	{
+		LastFireTime = GetWorld()->GetTimeSeconds();
+		Fire();
+	}
+}
+
 void ATank::Fire() 
 {
-	if (!Barrel) return;
+	if (!Barrel || !ProjectileBlueprint) return;
 
 	UE_LOG(LogTemp, Warning, TEXT("%s Fires!"), *GetName());
 	FActorSpawnParameters SpawnInfo;
@@ -41,6 +51,12 @@ void ATank::Fire()
 	);
 
 	Projectile->LaunchProjectile(LaunchSpeed);
+}
+
+bool ATank::CanFire()
+{
+	bool bCanFire = (GetWorld()->GetTimeSeconds() > LastFireTime + ReloadTime);
+	return bCanFire;
 }
 
 void ATank::AimAt(FVector AimLocation)
@@ -55,7 +71,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	if (PlayerInputComponent)
 	{
-		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ATank::Fire);
+		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ATank::AttemptFire);
 	}
 	else
 	{
