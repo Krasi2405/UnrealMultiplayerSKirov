@@ -29,43 +29,24 @@ class BATTLETANKGAME_API UTankMovementComponent : public UNavMovementComponent
 		// Called every frame
 		virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+		void HorizontalMovement(float Value);
+		
+		void VerticalMovement(float Value);
+
+		UFUNCTION(BlueprintCallable, Category = Setup)
 		void SetTracksReference(UTankTrack* LeftTrack, UTankTrack* RightTrack);
-
-		void StartThrottle();
-
-		void StopThrottle();
-
-		void StartNegativeThrottle();
-
-		void StopNegativeThrottle();
-
-		void StartTurnLeft();
-
-		void StopTurnLeft();
-
-		void StartTurnRight();
-
-		void StopTurnRight();
 
 	private:
 
 		UPROPERTY(EditAnywhere)
-			UTankTrack* LeftTrack;
+		UTankTrack* LeftTrack;
 
 		UPROPERTY(EditAnywhere)
-			UTankTrack* RightTrack;
+		UTankTrack* RightTrack;
 
 		void HandleMovement();
 
 		float LeftTrackForce = 0;
 
 		float RightTrackForce = 0;
-
-		bool bHasForwardThrotle = false;
-
-		bool bHasBackwardThrotle = false;
-
-		bool bHasLeftTorque = false;
-
-		bool bHasRightTorque;
 };

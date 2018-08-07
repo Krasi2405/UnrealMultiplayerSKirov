@@ -25,18 +25,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
 
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetTurretReference(UTankTurret* TurretToSet);
-
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetTracksReference(UTankTrack* LeftTrack, UTankTrack* RightTrack);
-
 	void AttemptFire();
 	
 
 protected:
+	UPROPERTY(BlueprintReadOnly)
 	UTankAimingComponent* TankAimingComponent;
 
+	UPROPERTY(BlueprintReadOnly)
 	UTankMovementComponent* TankMovementComponent;
 
 

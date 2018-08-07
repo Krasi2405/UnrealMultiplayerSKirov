@@ -81,7 +81,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ATank::AttemptFire);
 
 		BindPlayerMovementInput(PlayerInputComponent);
-		}
+	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s: no input component!"), *GetName());
@@ -90,14 +90,8 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::BindPlayerMovementInput(UInputComponent* PlayerInputComponent)
 {
-	PlayerInputComponent->BindAction("Throttle", IE_Pressed, TankMovementComponent, &UTankMovementComponent::StartThrottle);
-	PlayerInputComponent->BindAction("Throttle", IE_Released, TankMovementComponent, &UTankMovementComponent::StopThrottle);
-	PlayerInputComponent->BindAction("TurnLeft", IE_Pressed, TankMovementComponent, &UTankMovementComponent::StartTurnLeft);
-	PlayerInputComponent->BindAction("TurnLeft", IE_Released, TankMovementComponent, &UTankMovementComponent::StopTurnLeft);
-	PlayerInputComponent->BindAction("TurnRight", IE_Pressed, TankMovementComponent, &UTankMovementComponent::StartTurnRight);
-	PlayerInputComponent->BindAction("TurnRight", IE_Released, TankMovementComponent, &UTankMovementComponent::StopTurnRight);
-	PlayerInputComponent->BindAction("Back", IE_Pressed, TankMovementComponent, &UTankMovementComponent::StartNegativeThrottle);
-	PlayerInputComponent->BindAction("Back", IE_Released, TankMovementComponent, &UTankMovementComponent::StopNegativeThrottle);
+	PlayerInputComponent->BindAxis(FName("HorizontalMovement"), TankMovementComponent, &UTankMovementComponent::HorizontalMovement);
+	PlayerInputComponent->BindAxis(FName("VerticalMovement"), TankMovementComponent, &UTankMovementComponent::VerticalMovement);
 }
 
 
@@ -106,15 +100,4 @@ void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
 	Barrel = BarrelToSet;
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
 }
-
-void ATank::SetTurretReference(UTankTurret* TurretToSet)
-{
-	TankAimingComponent->SetTurretReference(TurretToSet);
-}
-
-void ATank::SetTracksReference(UTankTrack* LeftTrack, UTankTrack* RightTrack)
-{
-	TankMovementComponent->SetTracksReference(LeftTrack, RightTrack);
-}
-
 

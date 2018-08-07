@@ -44,109 +44,41 @@ void UTankMovementComponent::HandleMovement()
 		return;
 	}
 
-	LeftTrackForce = 0;
-	RightTrackForce = 0;
-	if (bHasForwardThrotle)
-	{
-		LeftTrackForce = 1;
-		RightTrackForce = 1;
-	}
-	else if (bHasBackwardThrotle)
-	{
-		LeftTrackForce = -1;
-		RightTrackForce = -1;
-	}
-
-	if (bHasLeftTorque)
-	{
-		if (bHasForwardThrotle)
-		{
-			LeftTrackForce = 0;
-		}
-		else if (bHasBackwardThrotle)
-		{
-			RightTrackForce = 0;
-		}
-		else
-		{
-			LeftTrackForce = 1;
-			RightTrackForce = -1;
-		}
-	}
-	else if (bHasRightTorque)
-	{
-		if (bHasForwardThrotle)
-		{
-			RightTrackForce = 0.2;
-		}
-		else if (bHasBackwardThrotle)
-		{
-			LeftTrackForce = -0.2;
-		}
-		else
-		{
-			LeftTrackForce = -1;
-			RightTrackForce = 1;
-		}
-	}
-
 	LeftTrack->SetThrottle(LeftTrackForce);
 	RightTrack->SetThrottle(RightTrackForce);
 
+	LeftTrackForce = 0;
+	RightTrackForce = 0;
 }
+
+void UTankMovementComponent::HorizontalMovement(float Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Horizontal value: %f"), Value);
+	if(Value < 0)
+	{
+		RightTrackForce += Value / 2;
+		LeftTrackForce -= Value / 2;
+	}
+	else
+	{
+		RightTrackForce -= Value / 2;
+		LeftTrackForce += Value / 2;
+	}
+}
+
+void UTankMovementComponent::VerticalMovement(float Value) 
+{
+	LeftTrackForce += Value;
+	RightTrackForce += Value;
+	UE_LOG(LogTemp, Warning, TEXT("Vertical value: %f"), Value);
+}
+
 
 void UTankMovementComponent::SetTracksReference(UTankTrack* LeftTrack, UTankTrack* RightTrack)
 {
+	if(!LeftTrack || !RightTrack) return;
 	this->LeftTrack = LeftTrack;
 	this->RightTrack = RightTrack;
-}
-
-
-void UTankMovementComponent::StartThrottle()
-{
-	bHasForwardThrotle = true;
-}
-
-
-void UTankMovementComponent::StopThrottle()
-{
-	bHasForwardThrotle = false;
-}
-
-
-void UTankMovementComponent::StartNegativeThrottle()
-{
-	bHasBackwardThrotle = true;
-}
-
-
-void UTankMovementComponent::StopNegativeThrottle()
-{
-	bHasBackwardThrotle = false;
-}
-
-
-void UTankMovementComponent::StartTurnLeft()
-{
-	bHasLeftTorque = true;
-}
-
-
-void UTankMovementComponent::StopTurnLeft()
-{
-	bHasLeftTorque = false;
-}
-
-
-void UTankMovementComponent::StartTurnRight()
-{
-	bHasRightTorque = true;
-}
-
-
-void UTankMovementComponent::StopTurnRight()
-{
-	bHasRightTorque = false;
 }
 
 
