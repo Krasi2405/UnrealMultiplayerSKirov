@@ -19,11 +19,8 @@ class BATTLETANKGAME_API UTankTrack : public UStaticMeshComponent
 
 	private:
 		UPROPERTY(EditDefaultsOnly)
-		float ForwardSpeed = 100;
+		float ForwardSpeed = 6000000; // = 10 ton * 6m/s
 
-		UPROPERTY(EditDefaultsOnly)
-		float BackwardSpeed = 50;
-	
 		// Way to control acceleration. Assume linear acceleration.
 		UPROPERTY(EditDefaultsOnly)
 		float SecondsUntilMaxSpeed = 2;

@@ -43,6 +43,9 @@ void UTankMovementComponent::HandleMovement()
 		UE_LOG(LogTemp, Error, TEXT("No tracks assigned for %s!"), *GetOwner()->GetName())
 		return;
 	}
+
+	LeftTrackForce = 0;
+	RightTrackForce = 0;
 	if(bHasForwardThrotle)
 	{
 		LeftTrackForce = 1;
@@ -58,11 +61,11 @@ void UTankMovementComponent::HandleMovement()
 	{
 		if(bHasForwardThrotle)
 		{
-			LeftTrackForce = 0.5;
+			LeftTrackForce = 0;
 		}
 		else if(bHasBackwardThrotle)
 		{
-			RightTrackForce = -0.5;
+			RightTrackForce = 0;
 		}
 		else
 		{
@@ -74,11 +77,11 @@ void UTankMovementComponent::HandleMovement()
 	{
 		if(bHasForwardThrotle)
 		{
-			RightTrackForce = 0.5;
+			RightTrackForce = 0.2;
 		}
 		else if(bHasBackwardThrotle)
 		{
-			LeftTrackForce = -0.5;
+			LeftTrackForce = -0.2;
 		}
 		else
 		{
@@ -89,6 +92,7 @@ void UTankMovementComponent::HandleMovement()
 
 	LeftTrack->SetThrottle(LeftTrackForce);
 	RightTrack->SetThrottle(RightTrackForce);
+
 }
 
 void UTankMovementComponent::SetTracksReference(UTankTrack* LeftTrack, UTankTrack* RightTrack)

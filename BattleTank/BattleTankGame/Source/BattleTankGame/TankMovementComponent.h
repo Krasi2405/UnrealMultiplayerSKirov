@@ -45,13 +45,13 @@ public:
 
 private:
 
-	void HandleMovement();
-
 	UPROPERTY(EditAnywhere)
 	UTankTrack* LeftTrack;
 
 	UPROPERTY(EditAnywhere)
 	UTankTrack* RightTrack;
+
+	void HandleMovement();
 
 	float LeftTrackForce = 0;
 
