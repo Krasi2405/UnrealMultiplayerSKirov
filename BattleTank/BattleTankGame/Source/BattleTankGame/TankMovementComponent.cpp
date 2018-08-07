@@ -21,8 +21,8 @@ void UTankMovementComponent::BeginPlay()
 
 	// ...
 
-	
-	
+
+
 }
 
 
@@ -46,24 +46,24 @@ void UTankMovementComponent::HandleMovement()
 
 	LeftTrackForce = 0;
 	RightTrackForce = 0;
-	if(bHasForwardThrotle)
+	if (bHasForwardThrotle)
 	{
 		LeftTrackForce = 1;
 		RightTrackForce = 1;
 	}
-	else if(bHasBackwardThrotle)
+	else if (bHasBackwardThrotle)
 	{
 		LeftTrackForce = -1;
 		RightTrackForce = -1;
 	}
 
-	if(bHasLeftTorque)
+	if (bHasLeftTorque)
 	{
-		if(bHasForwardThrotle)
+		if (bHasForwardThrotle)
 		{
 			LeftTrackForce = 0;
 		}
-		else if(bHasBackwardThrotle)
+		else if (bHasBackwardThrotle)
 		{
 			RightTrackForce = 0;
 		}
@@ -73,13 +73,13 @@ void UTankMovementComponent::HandleMovement()
 			RightTrackForce = -1;
 		}
 	}
-	else if(bHasRightTorque)
+	else if (bHasRightTorque)
 	{
-		if(bHasForwardThrotle)
+		if (bHasForwardThrotle)
 		{
 			RightTrackForce = 0.2;
 		}
-		else if(bHasBackwardThrotle)
+		else if (bHasBackwardThrotle)
 		{
 			LeftTrackForce = -0.2;
 		}
@@ -148,4 +148,8 @@ void UTankMovementComponent::StopTurnRight()
 {
 	bHasRightTorque = false;
 }
+
+
+
+
 

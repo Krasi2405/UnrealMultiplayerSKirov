@@ -3,65 +3,69 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "GameFramework/NavMovementComponent.h"
 #include "TankMovementComponent.generated.h"
 
+/**
+ * 
+ */
 class UTankTrack;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class BATTLETANKGAME_API UTankMovementComponent : public UActorComponent
+UCLASS()
+class BATTLETANKGAME_API UTankMovementComponent : public UNavMovementComponent
 {
 	GENERATED_BODY()
-
-public:	
-	// Sets default values for this component's properties
-	UTankMovementComponent();
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
-	void SetTracksReference(UTankTrack* LeftTrack, UTankTrack* RightTrack);
 
-	void StartThrottle();
+	public:
+		// Sets default values for this component's properties
+		UTankMovementComponent();
 
-	void StopThrottle();
+	protected:
+		// Called when the game starts
+		virtual void BeginPlay() override;
 
-	void StartNegativeThrottle();
+	public:
+		// Called every frame
+		virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void StopNegativeThrottle();
+		void SetTracksReference(UTankTrack* LeftTrack, UTankTrack* RightTrack);
 
-	void StartTurnLeft();
+		void StartThrottle();
 
-	void StopTurnLeft();
+		void StopThrottle();
 
-	void StartTurnRight();
+		void StartNegativeThrottle();
 
-	void StopTurnRight();
+		void StopNegativeThrottle();
 
-private:
+		void StartTurnLeft();
 
-	UPROPERTY(EditAnywhere)
-	UTankTrack* LeftTrack;
+		void StopTurnLeft();
 
-	UPROPERTY(EditAnywhere)
-	UTankTrack* RightTrack;
+		void StartTurnRight();
 
-	void HandleMovement();
+		void StopTurnRight();
 
-	float LeftTrackForce = 0;
+	private:
 
-	float RightTrackForce = 0;
+		UPROPERTY(EditAnywhere)
+			UTankTrack* LeftTrack;
 
-	bool bHasForwardThrotle = false;
+		UPROPERTY(EditAnywhere)
+			UTankTrack* RightTrack;
 
-	bool bHasBackwardThrotle = false;
+		void HandleMovement();
 
-	bool bHasLeftTorque = false;
+		float LeftTrackForce = 0;
 
-	bool bHasRightTorque;
+		float RightTrackForce = 0;
+
+		bool bHasForwardThrotle = false;
+
+		bool bHasBackwardThrotle = false;
+
+		bool bHasLeftTorque = false;
+
+		bool bHasRightTorque;
 };

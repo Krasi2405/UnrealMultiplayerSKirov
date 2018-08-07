@@ -98,7 +98,6 @@ void ATank::BindPlayerMovementInput(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("TurnRight", IE_Released, TankMovementComponent, &UTankMovementComponent::StopTurnRight);
 	PlayerInputComponent->BindAction("Back", IE_Pressed, TankMovementComponent, &UTankMovementComponent::StartNegativeThrottle);
 	PlayerInputComponent->BindAction("Back", IE_Released, TankMovementComponent, &UTankMovementComponent::StopNegativeThrottle);
-
 }
 
 
