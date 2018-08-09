@@ -19,10 +19,7 @@ void UTankMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-
-
-
+	
 }
 
 
@@ -30,19 +27,15 @@ void UTankMovementComponent::BeginPlay()
 void UTankMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	if (!LeftTrack || !RightTrack)
+		UE_LOG(LogTemp, Error, TEXT("No tracks assigned for %s!"), *GetOwner()->GetName())
 
 	HandleMovement();
 }
 
 void UTankMovementComponent::HandleMovement()
 {
-
-	if (!LeftTrack || !RightTrack)
-	{
-		UE_LOG(LogTemp, Error, TEXT("No tracks assigned for %s!"), *GetOwner()->GetName())
-		return;
-	}
+	if (!LeftTrack || !RightTrack) return;
 
 	LeftTrack->SetThrottle(LeftTrackForce);
 	RightTrack->SetThrottle(RightTrackForce);
@@ -51,9 +44,25 @@ void UTankMovementComponent::HandleMovement()
 	RightTrackForce = 0;
 }
 
+void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
+{
+	
+	FVector TankForward = GetOwner()->GetActorForwardVector().GetSafeNormal();
+	FVector AIMoveRotation = MoveVelocity.GetSafeNormal();
+
+	float DotProduct = FVector::DotProduct(TankForward, AIMoveRotation);
+	VerticalMovement(DotProduct);
+
+	FVector CrossProduct = FVector::CrossProduct(TankForward, AIMoveRotation);
+	HorizontalMovement(CrossProduct.Z);
+
+
+	UE_LOG(LogTemp, Warning, TEXT("Request Direct Move called on %s with dot product of %f and cross product of %s"), 
+		*GetOwner()->GetName(), DotProduct, *CrossProduct.ToString())
+}
+
 void UTankMovementComponent::HorizontalMovement(float Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Horizontal value: %f"), Value);
 	if(Value < 0)
 	{
 		RightTrackForce += Value / 2;
@@ -70,7 +79,6 @@ void UTankMovementComponent::VerticalMovement(float Value)
 {
 	LeftTrackForce += Value;
 	RightTrackForce += Value;
-	UE_LOG(LogTemp, Warning, TEXT("Vertical value: %f"), Value);
 }
 
 

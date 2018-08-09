@@ -34,6 +34,9 @@ void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// TODO: Fix acceptance rate.
+	MoveToActor(PlayerTank, AcceptanceRate);
+
 	ControlledTank->AttemptFire();
 	ControlledTank->AimAt(PlayerTank->GetActorLocation());
 }

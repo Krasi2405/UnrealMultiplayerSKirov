@@ -38,6 +38,8 @@ class BATTLETANKGAME_API UTankMovementComponent : public UNavMovementComponent
 
 	private:
 
+		void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
+
 		UPROPERTY(EditAnywhere)
 		UTankTrack* LeftTrack;
 

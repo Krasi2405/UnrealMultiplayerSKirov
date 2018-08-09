@@ -25,4 +25,7 @@ private:
 	ATank* ControlledTank;
 
 	ATank* PlayerTank;
+
+	UPROPERTY(EditDefaultsOnly)
+	float AcceptanceRate = 100;
 };
