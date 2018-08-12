@@ -21,11 +21,6 @@ class BATTLETANKGAME_API UTankMovementComponent : public UNavMovementComponent
 		// Sets default values for this component's properties
 		UTankMovementComponent();
 
-	protected:
-		// Called when the game starts
-		virtual void BeginPlay() override;
-
-	public:
 		// Called every frame
 		virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -36,9 +31,13 @@ class BATTLETANKGAME_API UTankMovementComponent : public UNavMovementComponent
 		UFUNCTION(BlueprintCallable, Category = Setup)
 		void SetTracksReference(UTankTrack* LeftTrack, UTankTrack* RightTrack);
 
-	private:
+	protected:
+		// Called when the game starts
+		virtual void BeginPlay() override;
 
 		void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
+
+	private:
 
 		UPROPERTY(EditAnywhere)
 		UTankTrack* LeftTrack;

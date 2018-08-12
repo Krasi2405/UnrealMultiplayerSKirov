@@ -27,6 +27,10 @@ class BATTLETANKGAME_API ATankPlayerController : public APlayerController
 		// Variable to hold the widget After Creating it.
 		UUserWidget* PlayerUI;
 
+	protected:
+		UPROPERTY(BlueprintReadOnly)
+		ATank* ControlledTank;
+
 		void BeginPlay() override;
 
 		void Tick(float DeltaTime) override;
@@ -39,8 +43,6 @@ class BATTLETANKGAME_API ATankPlayerController : public APlayerController
 		void AimTowardsCrosshair();
 
 		FVector2D GetAimingReticlePosition() const;
-
-		ATank* ControlledTank;
 
 		bool GetSightRayHitLocation(FVector &HitLocation) const;
 

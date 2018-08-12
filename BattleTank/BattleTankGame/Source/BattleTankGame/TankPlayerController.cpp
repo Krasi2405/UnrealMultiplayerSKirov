@@ -3,6 +3,8 @@
 #include "TankPlayerController.h"
 #include "UObject/UObjectGlobals.h"
 #include "Components/InputComponent.h"
+#include "SStandardSlateWidget.h"
+#include "SlateOptMacros.h"
 
 void ATankPlayerController::BeginPlay()
 {

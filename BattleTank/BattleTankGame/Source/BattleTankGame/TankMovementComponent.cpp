@@ -36,6 +36,8 @@ void UTankMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UTankMovementComponent::HandleMovement()
 {
 	if (!LeftTrack || !RightTrack) return;
+	LeftTrackForce = FMath::Clamp(LeftTrackForce, -1.f, 1.f);
+	RightTrackForce = FMath::Clamp(RightTrackForce, -1.f, 1.f);
 
 	LeftTrack->SetThrottle(LeftTrackForce);
 	RightTrack->SetThrottle(RightTrackForce);
